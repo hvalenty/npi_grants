@@ -1,6 +1,25 @@
 import pandas as pd
 import db
 import model_features
+import sqlite3
+import sqlalchemy
+
+query = '''
+    CREATE TABLE IF NOT EXISTS npi (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        lastname VARCHAR(100) NOT NULL,
+        forename VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    '''
+
+conn = sqlite3.connect('data/double_grants_npi.db')
+cursor = conn.cursor()
+cursor.execute(query)
+cursor.close()
+engine = sqlalchemy.create_engine('sqlite:///data/double_grants_npi.db')
+connector = engine.connect()
+
 
 def sample_last_names():
     '''Get a sample of last names from both databases'''
@@ -8,7 +27,7 @@ def sample_last_names():
                         FROM grants gr
                         INNER JOIN npi pr
                             ON gr.last_name = pr.last_name
-                        LIMIT 100;''', db.sql())
+                        LIMIT 100;''', connector) # Used to be db.sql_eng(), but fixing con error
     df = df.loc[~df['last_name'].str.contains("'")]
     return df
 
@@ -24,14 +43,14 @@ def get_probable_matches():
                 organization AS g_org, city AS g_city, state AS g_state, country AS g_country
                 FROM grantee
                 WHERE last_name IN ({names})'''
-    grantees = pd.read_sql((query, db.sql()))
+    grantees = pd.read_sql((query, connector)) # Used to be db.sql_eng(), but fixing con error
 
 
     query = f'''SELECT last_name, forename AS p_forename, address AS p_address, 
                 state AS p_state, country AS p_country
                 FROM npi
                 WHERE last_name IN ({names})'''
-    providers = pd.read_sql(query, db.sql())
+    providers = pd.read_sql(query, connector) # Used to be db.sql_eng(), but fixing con error
 
     comb = grantees.merge(providers, on='last_name')
     comb['forename_jw_dist'] = comb.apply(

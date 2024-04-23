@@ -19,6 +19,6 @@ def create_db():
     cursor.close()
 
 
-def sql():
+def sql_eng():
     engine = sqlalchemy.create_engine('sqlite:///data/double_grants_npi.db')
     return engine.connect()
