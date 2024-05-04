@@ -1,6 +1,6 @@
 import pandas as pd
 
-from npi_grants import db
+from npi_grants.sql import db
 
 
 def create_training_data_features_labels():

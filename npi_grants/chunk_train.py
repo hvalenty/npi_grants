@@ -1,6 +1,6 @@
 import pandas as pd
 import sqlite3
-import entity_resolution_model
+import npi_grants.sql.entity_resolution_model as entity_resolution_model
 
 '''load in blocks of data from the database and runs the trained model on the output
 1. iterate through all data

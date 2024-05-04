@@ -1,6 +1,6 @@
 import pandas as pd
-import db
-import model_features
+import npi_grants.sql.db as db
+import npi_grants.sql.model_features as model_features
 import sqlite3
 import sqlalchemy
 
