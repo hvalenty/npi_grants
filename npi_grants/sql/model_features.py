@@ -2,9 +2,6 @@ import pandas as pd
 import numpy as np
 import jarowinkler
 
-# txts = df[col].to_list()
-# df[f'{col}_vec'] = model.embed(txts)
-
 class FeatureExtractor():
     def __init__(self):
        pass
