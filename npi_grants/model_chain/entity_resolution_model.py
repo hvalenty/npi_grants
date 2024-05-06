@@ -9,7 +9,7 @@ import pandas as pd
 import xgboost as xgb
 #import scipy
 #import scipy.stats
-#import sklearn.model_selection
+import sklearn.model_selection
 
 
 class EntityResolutionModel():  # Camel case, because it's a class, matches filename
@@ -80,13 +80,6 @@ class EntityResolutionModel():  # Camel case, because it's a class, matches file
         if filename[:6] != today:
             filename = f'{today}_{filename}'
         
-        # ugly way:
-        # if filename[-5:].lower() != '.json':
-        #     filename = filename + '.json'
-        # # ugly way 2:
-        # dot_pos = filename.find('.')
-        # if filename[dot_pos:] != '.json':
-        #     filename = filename + '.json'
         # pretty way
         if os.path.splitext(filename)[1] != '.json':
             filename = filename + '.json'
@@ -119,3 +112,9 @@ class EntityResolutionModel():  # Camel case, because it's a class, matches file
     def _initialize_xgb_model(self):
         """Create a new xgbclassifier"""
         return xgb.XGBClassifier()
+    
+
+
+if __name__ == "__main__":
+    td = pd.read_csv('data/likely_grantee_provider_matches.csv')
+    EntityResolutionModel(td)

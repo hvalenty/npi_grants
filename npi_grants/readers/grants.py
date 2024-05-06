@@ -8,7 +8,7 @@ class GrantReader():
 
     def to_db(self, con):
         """Send the data to a database via a SQLAlchemy connection"""
-        self.df.to_sql('grantee',
+        self.df.to_sql('grants',
                        con,
                        if_exists='append',
                        index=False)

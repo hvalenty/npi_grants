@@ -14,10 +14,10 @@ class FeatureExtractor():
         for col in cols_to_lowercase:
             grantees[col] = grantees[col].str.lower()
 
-        # If it's training data
+        # Training data
         comb = pd.concat([grantees.add_suffix('_g'), providers.add_suffix('_p')], axis=1)
 
-        # If it's testing data
+        # Testing data
         
         comb['jw_dist_forename'] = comb.apply(lambda row: jw_dist(row['forename_g'],
                                                                   row['forename_p']), 

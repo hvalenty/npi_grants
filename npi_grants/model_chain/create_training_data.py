@@ -1,6 +1,6 @@
 import pandas as pd
-import npi_grants.sql.db as db
-import npi_grants.sql.model_features as model_features
+import db as db
+import model_features as model_features
 import sqlite3
 import sqlalchemy
 
@@ -39,19 +39,22 @@ def get_probable_matches():
     sample['last_name'] = "'" + sample['last_name'] + "'"
     names = ', '.join(sample['last_name'])
 
+    #pull from sql database for grants matches
+    #clunky but "add_prefix" was breaking
     query = f'''SELECT id AS g_id, forename AS g_forename, last_name, 
                 organization AS g_org, city AS g_city, state AS g_state, country AS g_country
-                FROM grantee
+                FROM grants
                 WHERE last_name IN ({names})'''
-    grantees = pd.read_sql((query, connector)) # Used to be db.sql_eng(), but fixing con error
+    grantees = pd.read_sql(query, connector) # Used to be db.sql_eng(), but fixing con error
 
-
+    #pull from sql db for npi matches
     query = f'''SELECT last_name, forename AS p_forename, address AS p_address, 
                 state AS p_state, country AS p_country
                 FROM npi
                 WHERE last_name IN ({names})'''
     providers = pd.read_sql(query, connector) # Used to be db.sql_eng(), but fixing con error
 
+    #merge the pulls from tables and compute jaro winkler distances
     comb = grantees.merge(providers, on='last_name')
     comb['forename_jw_dist'] = comb.apply(
         lambda row: model_features.jw_dist(row['g_forename'], row['p_forename']),

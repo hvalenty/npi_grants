@@ -3,7 +3,7 @@ import sqlite3
 
 
 def create_db():
-    """A database creation statement"""
+    """Create the database, sql query"""
     query = '''
     CREATE TABLE IF NOT EXISTS npi (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
